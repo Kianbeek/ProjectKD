@@ -17,6 +17,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private InputActionReference jumpAction;
 
     [SerializeField] private Rigidbody2D body;
+    [SerializeField] private SpriteRenderer spriteRenderer;
 
     private Vector2 _moveInput;
     private bool _jumpQueued;
@@ -26,6 +27,11 @@ public class PlayerMovement : MonoBehaviour
         if (body == null)
         {
             body = GetComponent<Rigidbody2D>();
+        }
+
+        if (spriteRenderer == null)
+        {
+            spriteRenderer = GetComponent<SpriteRenderer>();
         }
     }
 
@@ -67,6 +73,7 @@ public class PlayerMovement : MonoBehaviour
         {
             _moveInput = Vector2.zero;
         }
+        HandleFlip();
     }
 
     private void FixedUpdate()
@@ -92,6 +99,18 @@ public class PlayerMovement : MonoBehaviour
     {
         _jumpQueued = true;
     }
+    
+    private void HandleFlip()
+    {
+        if (_moveInput.x > 0.01f)
+        {
+            spriteRenderer.flipX = false;
+        }
+        else if (_moveInput.x < -0.01f)
+        {
+            spriteRenderer.flipX = true;
+        }
+    }
 
     private bool IsGrounded()
     {
@@ -99,7 +118,6 @@ public class PlayerMovement : MonoBehaviour
         {
             return false;
         }
-
         return Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
     }
 
